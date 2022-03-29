@@ -9,15 +9,6 @@ import UIKit
 
 final class MoviesViewController: UIViewController {
     
-    private lazy var backgroundImage: UIImageView = {
-       let image = UIImageView()
-        image.image = UIImage(named: "background")
-        image.contentMode = .scaleToFill
-        image.translatesAutoresizingMaskIntoConstraints = false
-        image.alpha = 0.4
-        return image
-    }()
-    
     private lazy var searchController: UISearchController = {
         let searchController = UISearchController(searchResultsController: nil)
         searchController.searchBar.tintColor = .white
@@ -26,27 +17,12 @@ final class MoviesViewController: UIViewController {
         return searchController
     }()
     
-    private lazy var tableView: UITableView = {
-        let tableView = UITableView()
-        tableView.dataSource = self
-        tableView.delegate = self
-        tableView.backgroundColor = .clear
-        tableView.translatesAutoresizingMaskIntoConstraints = false
-        tableView.registerCell(type: MovieCell.self)
-        return tableView
-    }()
-    
-    private var movies: [Movie]? {
-        didSet {
-            self.tableView.reloadData()
-        }
-    }
-    
+    private var movies: [Movie]?
     private let service: MoviesService = MoviesService()
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupView()
+        setupNavigation()
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -86,50 +62,8 @@ final class MoviesViewController: UIViewController {
     }
 }
 
-extension MoviesViewController: ViewCode {
-    func buildHierarchy() {
-        view.addSubview(backgroundImage)
-        view.addSubview(tableView)
-    }
-    
-    func setupConstraints() {
-        NSLayoutConstraint.activate([
-            backgroundImage.topAnchor.constraint(equalTo: view.topAnchor),
-            backgroundImage.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            backgroundImage.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            backgroundImage.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            
-            tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
-        ])
-    }
-    
-    func applyAdditionalChanges() {
-        setupNavigation()
-    }
-}
-
-
-extension MoviesViewController: UITableViewDataSource, UITableViewDelegate {
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return movies?.count ?? 0
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let movieCell = tableView.dequeueCell(withType: MovieCell.self, for: indexPath) as? MovieCell else {
-            return UITableViewCell()
-        }
-        if let model = movies?[indexPath.row] {
-            movieCell.configure(with: model)
-        }
-        return movieCell
-    }
-}
-
-
 // MARK: - Search Bar
+
 extension MoviesViewController: UISearchBarDelegate {
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         guard !searchText.isEmpty else {
