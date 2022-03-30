@@ -32,6 +32,8 @@ final class MoviesViewController: UIViewController {
         tableView.delegate = self
         tableView.backgroundColor = .clear
         tableView.translatesAutoresizingMaskIntoConstraints = false
+        tableView.estimatedRowHeight = 44
+        tableView.rowHeight = UITableView.automaticDimension
         tableView.registerCell(type: MovieCell.self)
         return tableView
     }()

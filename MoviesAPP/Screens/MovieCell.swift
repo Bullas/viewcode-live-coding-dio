@@ -139,10 +139,12 @@ extension MovieCell: ViewCode {
             stackView.leadingAnchor.constraint(equalTo: poster.trailingAnchor, constant: 16),
             
             star.widthAnchor.constraint(equalToConstant: 24),
-            star.heightAnchor.constraint(equalToConstant: 24),
-            
-            containerView.heightAnchor.constraint(equalToConstant: 150)
+            star.heightAnchor.constraint(equalToConstant: 24)
         ])
+        
+        let heightConstraint = containerView.heightAnchor.constraint(equalToConstant: 150)
+        heightConstraint.isActive = true
+        heightConstraint.priority = UILayoutPriority.init(999)
     }
 
     func applyAdditionalChanges() {
